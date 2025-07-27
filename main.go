@@ -2,30 +2,28 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"github.com/johnsonoklii/crawler/collect"
 )
 
 func main() {
-	url := "https://www.thepaper.cn/"
+	url := "https://book.douban.com/subject/37339619/"
+	var f collect.Fetcher = collect.BrowserFetch{}
+	body, err := f.Get(url)
 
-	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("fetch url error: %v\n", err)
-		return
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("Error status code: %v\n", resp.StatusCode)
-		return
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("read content failed: %v\n", err)
+		fmt.Println(err)
 	}
 
 	fmt.Println(string(body))
+
+	//doc, err := goquery.NewDocumentFromReader(bytes.NewReader(body))
+	//if err != nil {
+	//	fmt.Println("new document failed:%v", err)
+	//}
+	//
+	//doc.Find("div ul li a[target=_blank]").Each(
+	//	func(i int, s *goquery.Selection) {
+	//		title := s.Text()
+	//		fmt.Printf("%d:%s\n", i, title)
+	//	})
 }
