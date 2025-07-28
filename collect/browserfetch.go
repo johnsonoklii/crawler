@@ -6,13 +6,17 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type BrowserFetch struct {
+	Timeout time.Duration
 }
 
-func (BrowserFetch) Get(url string) ([]byte, error) {
-	client := &http.Client{}
+func (b BrowserFetch) Get(url string) ([]byte, error) {
+	client := &http.Client{
+		Timeout: b.Timeout,
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("get url failed: %v", err)
