@@ -3,13 +3,22 @@ package main
 import (
 	"fmt"
 	"github.com/johnsonoklii/crawler/collect"
+	"github.com/johnsonoklii/crawler/proxy"
 	"time"
 )
 
 func main() {
-	url := "https://book.douban.com/subject/37339619/"
+	url := "<https://google.com>"
+
+	proxyUrls := []string{"http://127.0.0.1:8888", "http://127.0.0.1:8889"}
+	Proxy, err := proxy.RoundRobinProxySwitcher(proxyUrls...)
+	if err != nil {
+		fmt.Println("RoundRobinProxySwitcher failed")
+	}
+
 	var f collect.Fetcher = collect.BrowserFetch{
 		Timeout: 5000 * time.Millisecond,
+		Proxy:   Proxy,
 	}
 	body, err := f.Get(url)
 
