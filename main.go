@@ -3,22 +3,28 @@ package main
 import (
 	"fmt"
 	"github.com/johnsonoklii/crawler/collect"
-	"github.com/johnsonoklii/crawler/proxy"
+	"github.com/johnsonoklii/crawler/log"
+	"go.uber.org/zap/zapcore"
 	"time"
 )
 
 func main() {
-	url := "<https://google.com>"
+	plugin, c := log.NewFilePlugin("./log.txt", zapcore.InfoLevel)
+	defer c.Close()
+	logger := log.NewLogger(plugin)
+	logger.Info("log init end")
 
-	proxyUrls := []string{"http://127.0.0.1:8888", "http://127.0.0.1:8889"}
-	Proxy, err := proxy.RoundRobinProxySwitcher(proxyUrls...)
-	if err != nil {
-		fmt.Println("RoundRobinProxySwitcher failed")
-	}
+	url := "https://google.com"
+
+	//proxyUrls := []string{"http://127.0.0.1:8888", "http://127.0.0.1:8889"}
+	//Proxy, err := proxy.RoundRobinProxySwitcher(proxyUrls...)
+	//if err != nil {
+	//	fmt.Println("RoundRobinProxySwitcher failed")
+	//}
 
 	var f collect.Fetcher = collect.BrowserFetch{
 		Timeout: 5000 * time.Millisecond,
-		Proxy:   Proxy,
+		//Proxy:   Proxy,
 	}
 	body, err := f.Get(url)
 
